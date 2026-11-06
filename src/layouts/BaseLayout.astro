@@ -1,0 +1,79 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	frontmatter: {
+		title: string;
+		description: string;
+		wordmarkHorizontal: string;
+		wordmarkStacked: string;
+		symbolLogo: string;
+		wordmarkLabel: string;
+		skipLinkLabel: string;
+		navigationLabel: string;
+		navigation: { label: string; href: string }[];
+		companyName: string;
+		location: string;
+	};
+}
+
+const { frontmatter } = Astro.props;
+const { title, description } = frontmatter;
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en-GB">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<meta name="robots" content="index, follow" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<title>{title}</title>
+		<link rel="icon" type="image/svg+xml" href={`/${frontmatter.symbolLogo}`} />
+	</head>
+	<body>
+		<a class="skip-link" href="#main-content">{frontmatter.skipLinkLabel}</a>
+		<header class="site-header">
+			<a class="wordmark" href="/" aria-label={frontmatter.wordmarkLabel}>
+				<picture>
+					<source
+						media="(max-width: 38rem)"
+						srcset={`/${frontmatter.wordmarkStacked}`}
+					/>
+					<img
+						src={`/${frontmatter.wordmarkHorizontal}`}
+						alt=""
+						width="240"
+						height="54"
+					/>
+				</picture>
+			</a>
+			<nav aria-label={frontmatter.navigationLabel}>
+				{frontmatter.navigation.map((item) => (
+					<a href={`/${item.href}`}>{item.label}</a>
+				))}
+			</nav>
+		</header>
+		<main id="main-content">
+			<slot />
+		</main>
+		<footer class="site-footer">
+			<a class="footer-wordmark" href="/">
+				<img
+					src={`/${frontmatter.symbolLogo}`}
+					alt=""
+					width="28"
+					height="28"
+				/>
+				<span>{frontmatter.companyName}</span>
+			</a>
+			<p>{frontmatter.location}</p>
+			<p>© {year} {frontmatter.companyName}</p>
+		</footer>
+	</body>
+</html>
